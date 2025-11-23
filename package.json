@@ -1,0 +1,30 @@
+{
+  "name": "com.ges.services.audio",
+  "displayName": "Tiny Service Audio",
+  "author": {
+    "name": "Derek Sliman",
+    "email": "lionext.studio@gmail.com",
+    "url": "https://github.com/gestiran"
+  },
+  "version": "1.0.0",
+  "unity": "2018.4",
+  "description": "Audio management system",
+  "keywords": [
+    "utilities",
+    "tools"
+  ],
+  "license": "MIT",
+  "category": "Utilities",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gestiran/TinyServiceAudio"
+  },
+  "dependencies": {
+    "com.ges.tinyreactive": "1.0.5",
+    "com.ges.tinyutilities": "1.2.2",
+    "com.cysharp.unitask": "2.5.10"
+  },
+  "publishConfig": {
+    "registry": "https://package.openupm.com"
+  }
+}
