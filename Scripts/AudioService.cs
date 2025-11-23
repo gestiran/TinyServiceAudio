@@ -8,8 +8,14 @@ namespace TinyServices.Audio {
         
         public AudioPlayerSingle player { get; private set; }
         public AudioPlayerLoop playerLoop { get; private set; }
+        
         public bool isEnableMusic { get; private set; }
         public bool isEnableSound { get; private set; }
+        
+        public bool isEnableMusicSettings { get; private set; }
+        public bool isEnableSoundSettings { get; private set; }
+        
+        public bool isPause { get; private set; }
         
         internal AudioParameters parametersInternal;
         
@@ -25,57 +31,125 @@ namespace TinyServices.Audio {
             
             Object.DontDestroyOnLoad(pool);
             
-            isEnableMusic = true;
-            isEnableSound = true;
+            isEnableMusic = LoadMusicState();
+            isEnableSound = LoadSoundState();
+            
+            isEnableMusicSettings = isEnableMusic;
+            isEnableSoundSettings = isEnableSound;
+            
+            isPause = LoadPauseState();
+            
+            ChangeMusicForce(isEnableMusic, _DEFAULT_TRANSITION_TIME);
+            ChangeSoundForce(isEnableSound, _DEFAULT_TRANSITION_TIME);
         }
         
-        public void UpdateAmbient(bool isEnable, float timeToReach = _DEFAULT_TRANSITION_TIME) {
+        public void ChangeMusicSettings(bool isEnable, float timeToReach = _DEFAULT_TRANSITION_TIME) {
+            if (isEnableMusicSettings == isEnable) {
+                return;
+            }
+            
+            isEnableMusicSettings = isEnable;
+            
+            if (isEnable) {
+                if (isEnableMusic) {
+                    ChangeMusicForce(true, timeToReach);
+                }
+            } else if (isEnableMusic) {
+                ChangeMusicForce(false, timeToReach);
+            }
+        }
+        
+        public void ChangeMusicState(bool isEnable, float timeToReach = _DEFAULT_TRANSITION_TIME) {
             if (isEnable == isEnableMusic) {
                 return;
             }
             
-            if (isEnable) {
-                TransitionToSnapshots(parametersInternal.mixers.music, _SNAPSHOT_ACTIVE, timeToReach);
-            } else {
-                TransitionToSnapshots(parametersInternal.mixers.music, _SNAPSHOT_MUTE, timeToReach);
+            if (isEnableMusicSettings) {
+                ChangeMusicForce(isEnable, timeToReach);
             }
             
             isEnableMusic = isEnable;
         }
         
-        public void UpdateSound(bool isEnable, bool isPause, float timeToReach = _DEFAULT_TRANSITION_TIME) {
+        public void ChangeSoundSettings(bool isEnable, float timeToReach = _DEFAULT_TRANSITION_TIME) {
+            if (isEnableSoundSettings == isEnable) {
+                return;
+            }
+            
+            isEnableSoundSettings = isEnable;
+            
+            if (isEnable) {
+                if (isEnableSound) {
+                    ChangeSoundForce(true, timeToReach);
+                }
+            } else if (isEnableSound) {
+                ChangeSoundForce(false, timeToReach);
+            }
+        }
+        
+        public void ChangeSoundState(bool isEnable, float timeToReach = _DEFAULT_TRANSITION_TIME) {
             if (isEnable == isEnableSound) {
                 return;
             }
             
-            if (isEnable) {
-                TransitionToSnapshots(parametersInternal.mixers.soundUnscaled, _SNAPSHOT_ACTIVE, timeToReach);
-                
-                if (isPause == false) {
-                    TransitionToSnapshots(parametersInternal.mixers.soundScaled, _SNAPSHOT_ACTIVE, timeToReach);
-                }
-            } else {
-                TransitionToSnapshots(parametersInternal.mixers.soundUnscaled, _SNAPSHOT_MUTE, timeToReach);
-                
-                if (isPause == false) {
-                    TransitionToSnapshots(parametersInternal.mixers.soundScaled, _SNAPSHOT_MUTE, timeToReach);
-                }
+            if (isEnableSoundSettings) {
+                ChangeSoundForce(isEnable, timeToReach);
             }
             
             isEnableSound = isEnable;
         }
         
-        private void UpdatePause(bool isPause, float timeToReach = _DEFAULT_TRANSITION_TIME) {
-            if (isEnableSound) {
-                if (isPause) {
-                    TransitionToSnapshots(parametersInternal.mixers.soundScaled, _SNAPSHOT_MUTE, timeToReach);
-                } else {
-                    TransitionToSnapshots(parametersInternal.mixers.soundScaled, _SNAPSHOT_ACTIVE, timeToReach);
+        private void ChangePause(bool isEnable, float timeToReach = _DEFAULT_TRANSITION_TIME) {
+            if (isEnable == isPause) {
+                return;
+            }
+            
+            isPause = isEnable;
+            
+            if (isEnable) {
+                if (isEnableSound && isEnableSoundSettings) {
+                    ChangeSoundScaledForce(false, timeToReach);
                 }
+            } else if (isEnableSound && isEnableSoundSettings) {
+                ChangeSoundScaledForce(true, timeToReach);
             }
         }
         
         public void ClearAllLoops() => playerLoop.ClearAllLoops();
+        
+        protected abstract bool LoadMusicState();
+        
+        protected abstract bool LoadSoundState();
+        
+        protected abstract bool LoadPauseState();
+        
+        private void ChangeMusicForce(bool isEnable, float timeToReach) {
+            if (isEnable) {
+                TransitionToSnapshots(parametersInternal.mixers.music, _SNAPSHOT_ACTIVE, timeToReach);
+            } else {
+                TransitionToSnapshots(parametersInternal.mixers.music, _SNAPSHOT_MUTE, timeToReach);
+            }
+        }
+        
+        private void ChangeSoundForce(bool isEnable, float timeToReach) {
+            if (isEnable) {
+                TransitionToSnapshots(parametersInternal.mixers.soundUnscaled, _SNAPSHOT_ACTIVE, timeToReach);
+            } else {
+                TransitionToSnapshots(parametersInternal.mixers.soundUnscaled, _SNAPSHOT_MUTE, timeToReach);
+            }
+            
+            if (isPause == false) {
+                ChangeSoundScaledForce(isEnable, timeToReach);
+            }
+        }
+        
+        private void ChangeSoundScaledForce(bool isEnable, float timeToReach) {
+            if (isEnable) {
+                TransitionToSnapshots(parametersInternal.mixers.soundScaled, _SNAPSHOT_ACTIVE, timeToReach);
+            } else {
+                TransitionToSnapshots(parametersInternal.mixers.soundScaled, _SNAPSHOT_MUTE, timeToReach);
+            }
+        }
         
         private void TransitionToSnapshots(AudioMixer mixer, string snapshotName, float timeToReach) {
             mixer.TransitionToSnapshots(new[] { mixer.FindSnapshot(snapshotName) }, new float[] { 1f }, timeToReach);
