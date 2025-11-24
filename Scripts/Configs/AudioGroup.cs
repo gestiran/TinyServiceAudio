@@ -42,7 +42,7 @@ namespace TinyServices.Audio.Configs {
                 Dictionary<T, AudioConfig<T>> checkList = new Dictionary<T, AudioConfig<T>>(_configs.Length);
                 
                 for (int configId = 0; configId < _configs.Length; configId++) {
-                    _configs[configId].UpdateDuplicate(checkList.TryAdd(_configs[configId].type.value, _configs[configId]));
+                    _configs[configId].UpdateDuplicate(checkList.TryAdd(_configs[configId].type.value, _configs[configId]) == false);
                 }
             }
         }
