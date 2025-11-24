@@ -31,11 +31,11 @@ namespace TinyServices.Audio {
             
             Object.DontDestroyOnLoad(pool);
             
-            isEnableMusic = LoadMusicState();
-            isEnableSound = LoadSoundState();
+            isEnableMusic = true;
+            isEnableSound = true;
             
-            isEnableMusicSettings = isEnableMusic;
-            isEnableSoundSettings = isEnableSound;
+            isEnableMusicSettings = LoadMusicState();
+            isEnableSoundSettings = LoadSoundState();
             
             isPause = LoadPauseState();
             
