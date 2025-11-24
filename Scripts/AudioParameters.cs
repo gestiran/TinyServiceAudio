@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.Audio;
 
 namespace TinyServices.Audio {
+    [Searchable(FilterOptions = SearchFilterOptions.ValueToString, Recursive = true, FuzzySearch = false)]
     public abstract class AudioParameters : ScriptableObject, ISelfValidator {
         [field: FoldoutGroup(InspectorNames.PARAMETERS)]
         [field: SerializeField, BoxGroup(InspectorNames.PARAMETERS  + "/Sources")]

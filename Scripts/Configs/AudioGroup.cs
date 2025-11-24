@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using TinyUtilities.Extensions.Unity;
 using UnityEngine;
 using UnityObject = UnityEngine.Object;
 
@@ -10,7 +11,8 @@ namespace TinyServices.Audio.Configs {
     [Serializable, InlineProperty, HideLabel]
     public sealed class AudioGroup<T> : AudioGroup where T : Enum {
         [Searchable(FilterOptions = SearchFilterOptions.ValueToString)]
-        [SerializeField, ListDrawerSettings(ShowFoldout = false, HideRemoveButton = true), OnValueChanged("UpdateDuplicateChecking", true)]
+        [ListDrawerSettings(ShowFoldout = false, HideAddButton = true, HideRemoveButton = true, DraggableItems = false)]
+        [SerializeField, OnValueChanged("UpdateDuplicateChecking", true)]
         private AudioConfig<T>[] _configs;
         
         [NonSerialized]
@@ -35,7 +37,10 @@ namespace TinyServices.Audio.Configs {
         [NonSerialized] private UnityObject _root;
         
         [OnInspectorInit]
-        private void InspectorInit() => UpdateDuplicateChecking();
+        private void InspectorInit() {
+            UpdateDuplicateChecking();
+            UpdateConfigs();
+        }
         
         private void UpdateDuplicateChecking() {
             if (_configs != null) {
@@ -45,6 +50,39 @@ namespace TinyServices.Audio.Configs {
                     _configs[configId].UpdateDuplicate(checkList.TryAdd(_configs[configId].type.value, _configs[configId]) == false);
                 }
             }
+        }
+        
+        private void UpdateConfigs() {
+            if (_configs != null) {
+                string[] names = Enum.GetNames(typeof(T));
+                
+                if (_configs.Length != names.Length) {
+                    List<AudioConfig<T>> result = new List<AudioConfig<T>>(names.Length);
+                    
+                    for (int nameId = 0; nameId < names.Length; nameId++) {
+                        if (TryGetConfig(names[nameId], out AudioConfig<T> config)) {
+                            result.Add(config);
+                        } else {
+                            result.Add(AudioConfig<T>.New(names[nameId]));
+                        }
+                    }
+                    
+                    _configs = result.ToArray();
+                    _root.TrySetDirty();
+                }
+            }
+        }
+        
+        private bool TryGetConfig(string enumName, out AudioConfig<T> config) {
+            foreach (AudioConfig<T> other in _configs) {
+                if (other != null && other.type.ToString().Equals(enumName)) {
+                    config = other;
+                    return true;
+                }
+            }
+            
+            config = null;
+            return false;
         }
         
         public void ApplyEditorRoot(UnityObject root) {

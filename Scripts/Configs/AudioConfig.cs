@@ -1,6 +1,7 @@
 using System;
 using Sirenix.OdinInspector;
 using TinyUtilities.CustomTypes;
+using TinyUtilities.Extensions.Unity;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityObject = UnityEngine.Object;
@@ -10,7 +11,7 @@ namespace TinyServices.Audio.Configs {
     public abstract class AudioConfig : ISelfValidator {
         [field: CustomContextMenu("Enable Range", "EnableRange")]
         [field: CustomContextMenu("Disable Range", "DisableRange")]
-        [field: SerializeField, HorizontalGroup, HideLabel]
+        [field: SerializeField, HorizontalGroup, LabelText("@GetLabel()")]
         public AudioClip clip { get; private set; }
         
         [field: CustomContextMenu("Enable Range", "EnableRange")]
@@ -60,11 +61,9 @@ namespace TinyServices.Audio.Configs {
             SetDirty();
         }
         
-        private void SetDirty() {
-            if (_root != null) {
-                UnityEditor.EditorUtility.SetDirty(_root);   
-            }
-        }
+        private void SetDirty() => _root.TrySetDirty();
+        
+        protected abstract string GetLabel();
         
     #endif
         
@@ -73,11 +72,27 @@ namespace TinyServices.Audio.Configs {
     
     [Serializable]
     public sealed class AudioConfig<T> : AudioConfig, IEquatable<AudioConfig<T>> where T : Enum {
-        [field: SerializeField, PropertyOrder(-10), HorizontalGroup, HideLabel]
+        [field: SerializeField, HideInInspector]
         public EnumName<T> type { get; private set; } = EnumName.New(default(T));
+        
+        public static AudioConfig<T> New(string enumName) {
+            AudioConfig<T> config = new AudioConfig<T>();
+            
+            if (Enum.TryParse(typeof(T), enumName, out object result) && result is T type) {
+                config.type = EnumName.New(type);
+            }
+            
+            return config;
+        }
         
         public bool Equals(AudioConfig<T> other) => other != null && type.Equals(other.type);
         
         public override string ToString() => $"{type}_{base.ToString()}";
+        
+    #if UNITY_EDITOR
+        
+        protected override string GetLabel() => $"{type}";
+        
+    #endif
     }
 }
