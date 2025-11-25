@@ -1,15 +1,21 @@
+// Copyright (c) 2023 Derek Sliman
+// Licensed under the MIT License. See LICENSE.md for details.
+
 using System.Collections.Generic;
 using TinyServices.Audio.Configs;
 using UnityEngine;
+using UnityObject = UnityEngine.Object;
 
 namespace TinyServices.Audio.Players {
     public sealed class AudioPlayerLoop {
         private readonly Transform _pool;
         private readonly Dictionary<string, AudioSource> _active;
+        private readonly AudioParameters _parameters;
         
-        public AudioPlayerLoop(Transform pool) {
+        public AudioPlayerLoop(Transform pool, AudioParameters parameters) {
             _pool = pool;
             _active = new Dictionary<string, AudioSource>();
+            _parameters = parameters;
         }
         
         public void PlayLoop<T>(string key, Vector3 position, T config) where T : AudioConfig {
@@ -21,11 +27,8 @@ namespace TinyServices.Audio.Players {
                 return;
             }
             
-            GameObject soundEffect = new GameObject($"Loop Effect {key}");
-            soundEffect.transform.SetParent(root, false);
-            soundEffect.transform.position = position;
-            
-            AudioSource source = soundEffect.AddComponent<AudioSource>();
+            AudioSource source = UnityObject.Instantiate(_parameters.sources.loop, position, Quaternion.identity, root);
+            source.name = $"Loop Effect {key}";
             
             source.Stop();
             
@@ -35,6 +38,7 @@ namespace TinyServices.Audio.Players {
             source.clip = config.clip;
             
             source.volume = config.volume;
+            source.rolloffMode = _parameters.sources.loop.rolloffMode;
             
             source.Play();
             
@@ -47,7 +51,7 @@ namespace TinyServices.Audio.Players {
             }
             
             source.Stop();
-            Object.Destroy(source.gameObject, 0.5f);
+            UnityObject.Destroy(source.gameObject, 0.5f);
             _active.Remove(key);
         }
         
@@ -62,7 +66,7 @@ namespace TinyServices.Audio.Players {
         public void ClearAllLoops() {
             foreach (AudioSource source in _active.Values) {
                 source.Stop();
-                Object.Destroy(source.gameObject, 0.5f);
+                UnityObject.Destroy(source.gameObject, 0.5f);
             }
             
             _active.Clear();

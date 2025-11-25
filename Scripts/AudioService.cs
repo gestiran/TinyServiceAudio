@@ -1,3 +1,6 @@
+// Copyright (c) 2023 Derek Sliman
+// Licensed under the MIT License. See LICENSE.md for details.
+
 using TinyServices.Audio.Players;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -27,7 +30,7 @@ namespace TinyServices.Audio {
             Transform pool = new GameObject("Audio").transform;
             
             player = new AudioPlayerSingle(pool, parametersInternal);
-            playerLoop = new AudioPlayerLoop(pool);
+            playerLoop = new AudioPlayerLoop(pool, parametersInternal);
             
             Object.DontDestroyOnLoad(pool);
             
@@ -39,8 +42,8 @@ namespace TinyServices.Audio {
             
             isPause = LoadPauseState();
             
-            ChangeMusicForce(isEnableMusic, _DEFAULT_TRANSITION_TIME);
-            ChangeSoundForce(isEnableSound, _DEFAULT_TRANSITION_TIME);
+            ChangeMusicForce(isEnableMusicSettings, _DEFAULT_TRANSITION_TIME);
+            ChangeSoundForce(isEnableSoundSettings, _DEFAULT_TRANSITION_TIME);
         }
         
         public void ChangeMusicSettings(bool isEnable, float timeToReach = _DEFAULT_TRANSITION_TIME) {

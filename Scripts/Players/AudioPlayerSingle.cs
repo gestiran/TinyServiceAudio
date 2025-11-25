@@ -1,5 +1,9 @@
+// Copyright (c) 2023 Derek Sliman
+// Licensed under the MIT License. See LICENSE.md for details.
+
 using TinyServices.Audio.Configs;
 using UnityEngine;
+using UnityObject = UnityEngine.Object;
 
 namespace TinyServices.Audio.Players {
     public sealed class AudioPlayerSingle {
@@ -12,7 +16,8 @@ namespace TinyServices.Audio.Players {
         }
         
         public void Play<T>(T config, Vector3 position) where T : AudioConfig {
-            AudioSource source = Object.Instantiate(_parameters.sources.single, position, Quaternion.identity, _pool);
+            AudioSource source = UnityObject.Instantiate(_parameters.sources.single, position, Quaternion.identity, _pool);
+            source.name = config.ToString();
             
             source.Stop();
             
@@ -25,6 +30,7 @@ namespace TinyServices.Audio.Players {
             
             source.spatialBlend = position.Equals(Vector3.zero) ? 0 : 1;
             source.minDistance = _parameters.distanceMin;
+            source.rolloffMode = _parameters.sources.single.rolloffMode;
             
             if (config.isHaveRange) {
                 source.maxDistance = config.range;
@@ -34,7 +40,7 @@ namespace TinyServices.Audio.Players {
             
             source.Play();
             
-            Object.Destroy(source.gameObject, config.clip.length * 2f);
+            UnityObject.Destroy(source.gameObject, config.clip.length * 2f);
         }
     }
 }
