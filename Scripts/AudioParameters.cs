@@ -2,7 +2,9 @@
 // Licensed under the MIT License. See LICENSE.md for details.
 
 using System;
+using System.Reflection;
 using Sirenix.OdinInspector;
+using TinyServices.Audio.Configs;
 using TinyUtilities;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -96,11 +98,25 @@ namespace TinyServices.Audio {
         
     #if UNITY_EDITOR
         
+        [OnInspectorInit]
+        private void InitInspector() => ApplyEditorRoot();
+        
         [ContextMenu(InspectorNames.SOFT_RESET)]
         protected virtual void Reset() {
             sources.Reset();
             mixers.Reset();
             UnityEditor.EditorUtility.SetDirty(this);
+        }
+        
+        private void ApplyEditorRoot() {
+            FieldInfo[] fields = GetType().GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            Type subType = typeof(AudioGroup);
+            
+            foreach (FieldInfo fieldInfo in fields) {
+                if (fieldInfo.FieldType.IsSubclassOf(subType) && fieldInfo.GetValue(this) is AudioGroup other) {
+                    other.ApplyEditorRoot(this);
+                }
+            }
         }
         
     #endif

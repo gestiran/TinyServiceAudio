@@ -9,11 +9,15 @@ using UnityEngine;
 using UnityObject = UnityEngine.Object;
 
 namespace TinyServices.Audio.Configs {
-    public abstract class AudioGroup { }
+    public abstract class AudioGroup {
+        [NonSerialized] internal UnityObject root;
+        
+        internal virtual void ApplyEditorRoot(UnityObject value) => root = value;
+    }
     
     [Serializable, InlineProperty, HideLabel]
     public sealed class AudioGroup<T> : AudioGroup where T : Enum {
-        [ListDrawerSettings(HideAddButton = true, HideRemoveButton = true, DraggableItems = false, DefaultExpandedState = true, ShowItemCount = false)]
+        [ListDrawerSettings(HideAddButton = true, HideRemoveButton = true, DraggableItems = false, ShowItemCount = false)]
         [SerializeField, LabelText("@GetLabel()"), OnValueChanged("UpdateDuplicateChecking", true)]
         private AudioConfig<T>[] _configs;
         
@@ -35,8 +39,6 @@ namespace TinyServices.Audio.Configs {
         }
         
     #if UNITY_EDITOR
-        
-        [NonSerialized] private UnityObject _root;
         
         [OnInspectorInit]
         private void InspectorInit() {
@@ -70,7 +72,7 @@ namespace TinyServices.Audio.Configs {
                     }
                     
                     _configs = result.ToArray();
-                    _root.TrySetDirty();
+                    root.TrySetDirty();
                 }
             }
         }
@@ -89,12 +91,12 @@ namespace TinyServices.Audio.Configs {
         
         private string GetLabel() => typeof(T).Name;
         
-        public void ApplyEditorRoot(UnityObject root) {
-            _root = root;
+        internal override void ApplyEditorRoot(UnityObject value) {
+            base.ApplyEditorRoot(value);
             
             if (_configs != null) {
                 for (int configId = 0; configId < _configs.Length; configId++) {
-                    _configs[configId].ApplyEditorRoot(_root);
+                    _configs[configId].ApplyEditorRoot(value);
                 }
             }
         }
