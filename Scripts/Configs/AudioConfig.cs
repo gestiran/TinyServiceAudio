@@ -14,12 +14,12 @@ namespace TinyServices.Audio.Configs {
     public abstract class AudioConfig : ISelfValidator {
         [field: CustomContextMenu("Enable Range", "EnableRange")]
         [field: CustomContextMenu("Disable Range", "DisableRange")]
-        [field: SerializeField, HorizontalGroup, LabelText("@GetLabel()")]
+        [field: SerializeField, HorizontalGroup(width: 200f), LabelWidth(100f), LabelText("@GetLabel()")]
         public AudioClip clip { get; private set; }
         
         [field: CustomContextMenu("Enable Range", "EnableRange")]
         [field: CustomContextMenu("Disable Range", "DisableRange")]
-        [field: SerializeField, HorizontalGroup, HideLabel]
+        [field: SerializeField, HorizontalGroup(width: 100f), HideLabel]
         public AudioMixerGroup mixer { get; private set; }
         
         [field: SerializeField, HorizontalGroup, HideLabel, Range(0, 1f)]

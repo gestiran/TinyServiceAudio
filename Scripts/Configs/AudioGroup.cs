@@ -13,9 +13,8 @@ namespace TinyServices.Audio.Configs {
     
     [Serializable, InlineProperty, HideLabel]
     public sealed class AudioGroup<T> : AudioGroup where T : Enum {
-        [Searchable(FilterOptions = SearchFilterOptions.ValueToString)]
-        [ListDrawerSettings(ShowFoldout = false, HideAddButton = true, HideRemoveButton = true, DraggableItems = false)]
-        [SerializeField, OnValueChanged("UpdateDuplicateChecking", true)]
+        [ListDrawerSettings(HideAddButton = true, HideRemoveButton = true, DraggableItems = false, DefaultExpandedState = true, ShowItemCount = false)]
+        [SerializeField, LabelText("@GetLabel()"), OnValueChanged("UpdateDuplicateChecking", true)]
         private AudioConfig<T>[] _configs;
         
         [NonSerialized]
@@ -87,6 +86,8 @@ namespace TinyServices.Audio.Configs {
             config = null;
             return false;
         }
+        
+        private string GetLabel() => typeof(T).Name;
         
         public void ApplyEditorRoot(UnityObject root) {
             _root = root;
