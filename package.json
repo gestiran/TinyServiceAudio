@@ -6,7 +6,7 @@
     "email": "lionext.studio@gmail.com",
     "url": "https://github.com/gestiran"
   },
-  "version": "1.0.7",
+  "version": "1.0.8",
   "unity": "2018.4",
   "description": "Audio management system",
   "keywords": [
@@ -20,7 +20,6 @@
     "url": "https://github.com/gestiran/TinyServiceAudio"
   },
   "dependencies": {
-    "com.ges.tinyreactive": "1.0.5",
     "com.ges.tinyutilities": "1.2.3",
     "com.cysharp.unitask": "2.5.10"
   },
