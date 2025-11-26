@@ -103,8 +103,18 @@ namespace TinyServices.Audio {
         
         [ContextMenu(InspectorNames.SOFT_RESET)]
         protected virtual void Reset() {
+            if (sources == null) {
+                sources = new Sources();
+            }
+            
             sources.Reset();
+            
+            if (mixers == null) {
+                mixers = new Mixers();
+            }
+            
             mixers.Reset();
+            
             UnityEditor.EditorUtility.SetDirty(this);
         }
         
