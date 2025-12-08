@@ -15,7 +15,7 @@ namespace TinyServices.Audio.Players {
             _parameters = parameters;
         }
         
-        public void Play<T>(T config, Vector3 position) where T : AudioConfig {
+        public AudioSource Play<T>(T config, Vector3 position) where T : AudioConfig {
             AudioSource source = UnityObject.Instantiate(_parameters.sources.single, position, Quaternion.identity, _pool);
             source.name = config.ToString();
             
@@ -41,6 +41,8 @@ namespace TinyServices.Audio.Players {
             source.Play();
             
             UnityObject.Destroy(source.gameObject, config.clip.length * 2f);
+            
+            return source;
         }
     }
 }

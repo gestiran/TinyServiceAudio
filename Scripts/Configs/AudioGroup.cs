@@ -60,7 +60,7 @@ namespace TinyServices.Audio.Configs {
             if (_configs != null) {
                 string[] names = Enum.GetNames(typeof(T));
                 
-                if (_configs.Length != names.Length) {
+                if (_configs.Length != names.Length || IsDifferentNames(names)) {
                     List<AudioConfig<T>> result = new List<AudioConfig<T>>(names.Length);
                     
                     for (int nameId = 0; nameId < names.Length; nameId++) {
@@ -90,6 +90,20 @@ namespace TinyServices.Audio.Configs {
         }
         
         private string GetLabel() => typeof(T).Name;
+        
+        private bool IsDifferentNames(string[] names) {
+            for (int nameId = 0; nameId < names.Length; nameId++) {
+                if (_configs[nameId] == null) {
+                    return true;
+                }
+                
+                if (_configs[nameId].type.ToString().Equals(names[nameId]) == false) {
+                    return true;
+                }
+            }
+            
+            return false;
+        }
         
         internal override void ApplyEditorRoot(UnityObject value) {
             base.ApplyEditorRoot(value);

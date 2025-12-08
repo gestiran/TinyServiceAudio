@@ -102,7 +102,7 @@ namespace TinyServices.Audio {
             isEnableSound = isEnable;
         }
         
-        private void ChangePause(bool isEnable, float timeToReach = _DEFAULT_TRANSITION_TIME) {
+        public void ChangePause(bool isEnable, float timeToReach = _DEFAULT_TRANSITION_TIME) {
             if (isEnable == isPause) {
                 return;
             }

@@ -18,16 +18,16 @@ namespace TinyServices.Audio.Players {
             _parameters = parameters;
         }
         
-        public void PlayLoop<T>(string key, Vector3 position, T config) where T : AudioConfig {
-            PlayLoop(key, _pool, position, config);
+        public AudioSource PlayLoop<T>(string key, Vector3 position, T config) where T : AudioConfig {
+            return PlayLoop(key, _pool, position, config);
         }
         
-        public void PlayLoop<T>(string key, Transform root, Vector3 position, T config) where T : AudioConfig {
-            if (_active.ContainsKey(key)) {
-                return;
+        public AudioSource PlayLoop<T>(string key, Transform root, Vector3 position, T config) where T : AudioConfig {
+            if (_active.TryGetValue(key, out AudioSource source)) {
+                return source;
             }
             
-            AudioSource source = UnityObject.Instantiate(_parameters.sources.loop, position, Quaternion.identity, root);
+            source = UnityObject.Instantiate(_parameters.sources.loop, position, Quaternion.identity, root);
             source.name = $"Loop Effect {key}";
             
             source.Stop();
@@ -43,6 +43,7 @@ namespace TinyServices.Audio.Players {
             source.Play();
             
             _active.Add(key, source);
+            return source;
         }
         
         public void StopLoop(string key) {
