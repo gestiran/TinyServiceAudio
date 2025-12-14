@@ -1,7 +1,10 @@
 // Copyright (c) 2023 Derek Sliman
 // Licensed under the MIT License. See LICENSE.md for details.
 
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using TinyServices.Audio.Players;
+using TinyUtilities.Extensions.Global;
 using UnityEngine;
 using UnityEngine.Audio;
 
@@ -21,6 +24,8 @@ namespace TinyServices.Audio {
         public bool isPause { get; private set; }
         
         internal AudioParameters parametersInternal;
+        
+        private CancellationTokenSource _cancellation;
         
         private const string _SNAPSHOT_ACTIVE = "Active";
         private const string _SNAPSHOT_MUTE = "Mute";
@@ -44,7 +49,12 @@ namespace TinyServices.Audio {
             
             ChangeMusicForce(isEnableMusicSettings, _DEFAULT_TRANSITION_TIME);
             ChangeSoundForce(isEnableSoundSettings, _DEFAULT_TRANSITION_TIME);
+            
+            _cancellation = _cancellation.Recreate();
+            UpdateActiveProcess(_cancellation.Token).Forget();
         }
+        
+        protected virtual void Destroy() => _cancellation = _cancellation.Reset();
         
         public void ChangeMusicSettings(bool isEnable, float timeToReach = _DEFAULT_TRANSITION_TIME) {
             if (isEnableMusicSettings == isEnable) {
@@ -125,6 +135,13 @@ namespace TinyServices.Audio {
         protected abstract bool LoadSoundState();
         
         protected abstract bool LoadPauseState();
+        
+        private async UniTask UpdateActiveProcess(CancellationToken cancellation) {
+            while (Application.isPlaying) {
+                player.UpdateActive(Time.unscaledDeltaTime);
+                await UniTask.Yield(PlayerLoopTiming.Update, cancellation);
+            }
+        }
         
         private void ChangeMusicForce(bool isEnable, float timeToReach) {
             if (isEnable) {

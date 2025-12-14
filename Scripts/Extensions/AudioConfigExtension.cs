@@ -16,6 +16,14 @@ namespace TinyServices.Audio.Extensions {
             return AudioService.instance.player.Play(config, position);
         }
         
+        public static AudioSource Play<T>(this T config, string key, float limit) where T : AudioConfig {
+            return AudioService.instance.player.PlayLimit(config, _zeroPosition, key, limit);
+        }
+        
+        public static AudioSource Play<T>(this T config, Vector3 position, string key, float limit) where T : AudioConfig {
+            return AudioService.instance.player.PlayLimit(config, position, key, limit);
+        }
+        
         public static AudioSource PlayLoop<T>(this T config, string key) where T : AudioConfig {
             return AudioService.instance.playerLoop.PlayLoop(key, _zeroPosition, config);
         }

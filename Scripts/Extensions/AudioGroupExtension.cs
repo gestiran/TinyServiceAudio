@@ -15,6 +15,16 @@ namespace TinyServices.Audio.Extensions {
             return group.GetConfigs()[type].Play(position);
         }
         
+        public static AudioSource Play<T>(this AudioGroup<T> group, T type, float limit) where T : Enum {
+            string key = $"{type.GetType().Name}_{type}";
+            return group.GetConfigs()[type].Play(key, limit);
+        }
+        
+        public static AudioSource Play<T>(this AudioGroup<T> group, T type, Vector3 position, float limit) where T : Enum {
+            string key = $"{type.GetType().Name}_{type}";
+            return group.GetConfigs()[type].Play(position, key, limit);
+        }
+        
         public static AudioSource PlayLoop<T>(this AudioGroup<T> group, T type, string key) where T : Enum {
             return group.GetConfigs()[type].PlayLoop(key);
         }
