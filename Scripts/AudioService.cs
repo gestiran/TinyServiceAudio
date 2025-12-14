@@ -138,8 +138,8 @@ namespace TinyServices.Audio {
         
         private async UniTask UpdateActiveProcess(CancellationToken cancellation) {
             while (Application.isPlaying) {
-                player.UpdateActive(Time.unscaledDeltaTime);
-                await UniTask.Yield(PlayerLoopTiming.Update, cancellation);
+                await UniTask.Delay(1000, DelayType.UnscaledDeltaTime, PlayerLoopTiming.Update, cancellation);
+                player.ClearActive();
             }
         }
         

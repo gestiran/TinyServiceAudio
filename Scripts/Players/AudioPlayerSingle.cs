@@ -10,37 +10,31 @@ namespace TinyServices.Audio.Players {
     public sealed class AudioPlayerSingle {
         private readonly Transform _pool;
         private readonly AudioParameters _parameters;
-        private readonly Dictionary<string, ActiveLink> _activePool;
-        
-        private sealed class ActiveLink {
-            public float remainingTime { get; private set; }
-            
-            public readonly AudioSource source;
-            
-            public ActiveLink(AudioSource source, float remainingTime) {
-                this.source = source;
-                this.remainingTime = remainingTime;
-            }
-            
-            public bool Next(float time) {
-                remainingTime -= time;
-                return remainingTime > 0;
-            }
-        }
+        private readonly Dictionary<string, List<AudioSource>> _activePool;
         
         public AudioPlayerSingle(Transform pool, AudioParameters parameters) {
             _pool = pool;
             _parameters = parameters;
-            _activePool = new Dictionary<string, ActiveLink>(128);
+            _activePool = new Dictionary<string, List<AudioSource>>(128);
         }
         
-        public AudioSource PlayLimit<T>(T config, Vector3 position, string key, float limit) where T : AudioConfig {
-            if (_activePool.TryGetValue(key, out ActiveLink link)) {
-                return link.source;
+        public AudioSource PlayLimit<T>(T config, Vector3 position, string key, int count) where T : AudioConfig {
+            AudioSource source;
+            
+            if (_activePool.TryGetValue(key, out List<AudioSource> active)) {
+                if (active.Count > count) {
+                    source = active[count - 1];
+                } else {
+                    source = Play(config, position);
+                    active.Add(source);   
+                }
+            } else {
+                active = new List<AudioSource>(count);
+                source = Play(config, position);
+                active.Add(source);
+                _activePool.Add(key, active);
             }
             
-            AudioSource source = Play(config, position);
-            _activePool.Add(key, new ActiveLink(source, limit));
             return source;
         }
         
@@ -74,22 +68,6 @@ namespace TinyServices.Audio.Players {
             return source;
         }
         
-        internal void UpdateActive(float time) {
-            List<string> keys = new List<string>(32);
-            
-            foreach (KeyValuePair<string, ActiveLink> pair in _activePool) {
-                if (pair.Value.Next(time)) {
-                    continue;
-                }
-                
-                keys.Add(pair.Key);
-            }
-            
-            if (keys.Count > 0) {
-                foreach (string key in keys) {
-                    _activePool.Remove(key);
-                }
-            }
-        }
+        internal void ClearActive() => _activePool.Clear();
     }
 }
