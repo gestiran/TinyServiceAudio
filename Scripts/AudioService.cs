@@ -4,7 +4,7 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using TinyServices.Audio.Players;
-using TinyUtilities.Extensions.Global;
+using TinyUtilities.Extensions;
 using UnityEngine;
 using UnityEngine.Audio;
 

@@ -4,7 +4,7 @@
 using System;
 using Sirenix.OdinInspector;
 using TinyUtilities.CustomTypes;
-using TinyUtilities.Extensions.Unity;
+using TinyUtilities.Extensions;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityObject = UnityEngine.Object;

@@ -4,7 +4,7 @@
 using System;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
-using TinyUtilities.Extensions.Unity;
+using TinyUtilities.Extensions;
 using UnityEngine;
 using UnityObject = UnityEngine.Object;
 

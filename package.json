@@ -1,30 +1,30 @@
 {
-  "name": "com.ges.services.audio",
-  "displayName": "Tiny Service Audio",
-  "author": {
-    "name": "Derek Sliman",
-    "url": "https://github.com/gestiran",
-    "email": "lionext.studio@gmail.com"
-  },
-  "version": "1.0.13",
-  "unity": "2018.4",
-  "description": "Audio management system",
-  "keywords": [
-    "utilities",
-    "tools"
-  ],
-  "license": "MIT",
-  "category": "Utilities",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/gestiran/TinyServiceAudio"
-  },
-  "dependencies": {
-    "com.ges.tinyutilities": "1.2.6",
-    "com.cysharp.unitask": "2.5.10"
-  },
-  "publishConfig": {
-    "registry": "https://package.openupm.com"
-  },
-  "licensesUrl": "https://github.com/gestiran/TinyServiceAudio/blob/main/LICENSE.md"
+    "name": "com.ges.services.audio",
+    "displayName": "Tiny Service Audio",
+    "author": {
+        "name": "Derek Sliman",
+        "url": "https://github.com/gestiran",
+        "email": "lionext.studio@gmail.com"
+    },
+    "version": "1.0.13",
+    "unity": "2018.4",
+    "description": "Audio management system",
+    "keywords": [
+        "utilities",
+        "tools"
+    ],
+    "license": "MIT",
+    "category": "Utilities",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/gestiran/TinyServiceAudio"
+    },
+    "dependencies": {
+        "com.ges.tinyutilities": "1.3.5",
+        "com.cysharp.unitask": "2.5.10"
+    },
+    "publishConfig": {
+        "registry": "https://package.openupm.com"
+    },
+    "licensesUrl": "https://github.com/gestiran/TinyServiceAudio/blob/main/LICENSE.md"
 }

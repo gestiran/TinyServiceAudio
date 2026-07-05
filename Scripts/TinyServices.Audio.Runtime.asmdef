@@ -2,8 +2,8 @@
     "name": "TinyServices.Audio.Runtime",
     "rootNamespace": "TinyServices.Audio",
     "references": [
-        "GUID:f51ebe6a0ceec4240a699833d6309b23",
-        "GUID:4e0a720b84c89124e9d810fcff94c92f"
+        "UniTask",
+        "TinyUtilities.Runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
