@@ -14,7 +14,7 @@ namespace TinyServices.Audio.Configs {
     public abstract class AudioConfig : ISelfValidator {
         [field: CustomContextMenu("Enable Range", "EnableRange")]
         [field: CustomContextMenu("Disable Range", "DisableRange")]
-        [field: SerializeField, HorizontalGroup(width: 200f), LabelWidth(100f), LabelText("@GetLabel()")]
+        [field: SerializeField, HorizontalGroup(width: 280f), LabelWidth(180f), LabelText("@GetLabel()")]
         public AudioClip clip { get; private set; }
         
         [field: CustomContextMenu("Enable Range", "EnableRange")]
