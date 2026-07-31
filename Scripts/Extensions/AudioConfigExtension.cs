@@ -24,6 +24,22 @@ namespace TinyServices.Audio.Extensions {
             return AudioService.instance.player.PlayLimit(config, position, key, limit);
         }
         
+        public static bool PlayWithCooldown<T>(this T config, string key, float cooldown) where T : AudioConfig {
+            return AudioService.instance.player.PlayWithCooldown(config, _zeroPosition, key, cooldown, out _);
+        }
+        
+        public static bool PlayWithCooldown<T>(this T config, string key, float cooldown, out AudioSource source) where T : AudioConfig {
+            return AudioService.instance.player.PlayWithCooldown(config, _zeroPosition, key, cooldown, out source);
+        }
+        
+        public static bool PlayWithCooldown<T>(this T config, Vector3 position, string key, float cooldown) where T : AudioConfig {
+            return AudioService.instance.player.PlayWithCooldown(config, position, key, cooldown, out _);
+        }
+        
+        public static bool PlayWithCooldown<T>(this T config, Vector3 position, string key, float cooldown, out AudioSource source) where T : AudioConfig {
+            return AudioService.instance.player.PlayWithCooldown(config, position, key, cooldown, out source); 
+        }
+        
         public static AudioSource PlayLoop<T>(this T config, string key) where T : AudioConfig {
             return AudioService.instance.playerLoop.PlayLoop(key, _zeroPosition, config);
         }

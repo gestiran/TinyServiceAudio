@@ -11,11 +11,13 @@ namespace TinyServices.Audio.Players {
         private readonly Transform _pool;
         private readonly AudioParameters _parameters;
         private readonly Dictionary<string, List<AudioSource>> _activePool;
+        private readonly Dictionary<string, float> _timePool;
         
         public AudioPlayerSingle(Transform pool, AudioParameters parameters) {
             _pool = pool;
             _parameters = parameters;
             _activePool = new Dictionary<string, List<AudioSource>>(128);
+            _timePool = new Dictionary<string, float>(128);
         }
         
         public AudioSource PlayLimit<T>(T config, Vector3 position, string key, int count) where T : AudioConfig {
@@ -36,6 +38,19 @@ namespace TinyServices.Audio.Players {
             }
             
             return source;
+        }
+        
+        public bool PlayWithCooldown<T>(T config, Vector3 position, string key, float cooldown, out AudioSource source) where T : AudioConfig {
+            if (_timePool.TryGetValue(key, out float lastTime)) {
+                if (Time.unscaledTime - lastTime < cooldown) {
+                    source = null;
+                    return false;
+                }
+            }
+            
+            _timePool[key] = Time.unscaledTime;
+            source = Play(config, position);
+            return true;
         }
         
         public AudioSource Play<T>(T config, Vector3 position) where T : AudioConfig {
