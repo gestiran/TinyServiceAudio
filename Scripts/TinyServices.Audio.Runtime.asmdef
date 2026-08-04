@@ -2,15 +2,15 @@
     "name": "TinyServices.Audio.Runtime",
     "rootNamespace": "TinyServices.Audio",
     "references": [
-        "UniTask",
-        "TinyUtilities.Runtime"
+        "TinyUtilities.Core",
+        "TinyUtilities.Runtime",
+        "UniTask"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": true,
     "precompiledReferences": [
-        "com.ges.tinyutilities.dll",
         "Sirenix.OdinInspector.Attributes.dll"
     ],
     "autoReferenced": true,
