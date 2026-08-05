@@ -25,6 +25,22 @@ namespace TinyServices.Audio.Extensions {
             return group.GetConfigs()[type].Play(position, key, limit);
         }
         
+        public static bool PlayWithCooldown<T>(this AudioGroup<T> group, T type, string key, float cooldown) where T : Enum {
+            return group.GetConfigs()[type].PlayWithCooldown(key, cooldown);
+        }
+        
+        public static bool PlayWithCooldown<T>(this AudioGroup<T> group, T type, string key, float cooldown, out AudioSource source) where T : Enum {
+            return group.GetConfigs()[type].PlayWithCooldown(key, cooldown, out source);
+        }
+        
+        public static bool PlayWithCooldown<T>(this AudioGroup<T> group, T type, Vector3 position, string key, float cooldown) where T : Enum {
+            return group.GetConfigs()[type].PlayWithCooldown(position, key, cooldown);
+        }
+        
+        public static bool PlayWithCooldown<T>(this AudioGroup<T> group, T type, Vector3 position, string key, float cooldown, out AudioSource source) where T : Enum {
+            return group.GetConfigs()[type].PlayWithCooldown(position, key, cooldown, out source);
+        }
+        
         public static AudioSource PlayLoop<T>(this AudioGroup<T> group, T type, string key) where T : Enum {
             return group.GetConfigs()[type].PlayLoop(key);
         }

@@ -24,6 +24,8 @@ namespace TinyServices.Audio.Configs {
         [NonSerialized]
         private Dictionary<T, AudioConfig<T>> _cache;
         
+        public bool TryGetConfig(T type, out AudioConfig<T> config) => GetConfigs().TryGetValue(type, out config);
+        
         internal Dictionary<T, AudioConfig<T>> GetConfigs() {
             if (_cache != null) {
                 return _cache;
